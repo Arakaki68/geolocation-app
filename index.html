@@ -57,3 +57,65 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation Link</title>
+</head>
+<body>
+    <h1>Geolocation Link</h1>
+    <a href="#" onclick="getLocation()">Clique aqui para compartilhar sua localização</a>
+    <p id="status"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                document.getElementById("status").innerHTML = "Obtendo localização...";
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                document.getElementById("status").innerHTML = "Geolocalização não é suportada por este navegador.";
+            }
+        }
+
+        function sendPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            console.log("Latitude:", latitude, "Longitude:", longitude); // Log de depuração
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://<your-subdomain>.ngrok.io/receber_localizacao", true); // Atualize com a URL do ngrok
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("status").innerHTML = "Localização enviada com sucesso!";
+                } else if (xhr.readyState === 4) {
+                    document.getElementById("status").innerHTML = "Erro ao enviar localização.";
+                }
+            };
+            xhr.send(JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            }));
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "Permissão negada para obter localização.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "Informações de localização não disponíveis.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "A solicitação para obter a localização expirou.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("status").innerHTML = "Ocorreu um erro desconhecido.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
+
