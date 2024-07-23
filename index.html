@@ -35,4 +35,33 @@
                         console.log("Resposta do servidor:", xhr.responseText);
                     } else {
                         document.getElementById("status").innerHTML = "Erro ao enviar localização.";
-                        console.log("Erro ao enviar:", xh
+                        console.log("Erro ao enviar:", xhr.status, xhr.statusText);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            }));
+        }
+
+        function showError(error) {
+            console.log("showError chamado", error);
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "Permissão negada para obter localização.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "Informações de localização não disponíveis.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "A solicitação para obter a localização expirou.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("status").innerHTML = "Ocorreu um erro desconhecido.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
