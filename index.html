@@ -10,7 +10,7 @@
 
     <script>
         function getLocation() {
-            console.log("getLocation chamado"); // Log de depuração
+            console.log("getLocation chamado");
             if (navigator.geolocation) {
                 document.getElementById("status").innerHTML = "Obtendo localização...";
                 navigator.geolocation.getCurrentPosition(sendPosition, showError);
@@ -23,18 +23,20 @@
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
 
-            console.log("Latitude:", latitude, "Longitude:", longitude); // Log de depuração
+            console.log("Latitude:", latitude, "Longitude:", longitude);
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://6300-179-191-88-83.ngrok-free.app/receber_localizacao", true); // Substitua pela URL gerada pelo ngrok
+            xhr.open("POST", "https://747f-179-191-88-83.ngrok-free.app/receber_localizacao", true); // Substitua pela URL gerada pelo ngrok
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById("status").innerHTML = "Localização enviada com sucesso!";
-                    console.log("Resposta do servidor:", xhr.responseText); // Log de depuração
-                } else if (xhr.readyState === 4) {
-                    document.getElementById("status").innerHTML = "Erro ao enviar localização.";
-                    console.log("Erro ao enviar:", xhr.status, xhr.statusText); // Log de depuração
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById("status").innerHTML = "Localização enviada com sucesso!";
+                        console.log("Resposta do servidor:", xhr.responseText);
+                    } else {
+                        document.getElementById("status").innerHTML = "Erro ao enviar localização.";
+                        console.log("Erro ao enviar:", xhr.status, xhr.statusText);
+                    }
                 }
             };
             xhr.send(JSON.stringify({
@@ -44,7 +46,7 @@
         }
 
         function showError(error) {
-            console.log("showError chamado", error); // Log de depuração
+            console.log("showError chamado", error);
             switch(error.code) {
                 case error.PERMISSION_DENIED:
                     document.getElementById("status").innerHTML = "Permissão negada para obter localização.";
