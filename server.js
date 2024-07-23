@@ -1,45 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
-const app = express();
-const port = 3000;
-
-app.use(cors());
-app.use(bodyParser.json());
-
-app.post('/receber_localizacao', (req, res) => {
-    const { latitude, longitude } = req.body;
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-    res.send('Localização recebida com sucesso!');
-});
-
-app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
-});
-
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors'); // Importar cors
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
+const googleApiKey = 'YOUR_GOOGLE_API_KEY'; // Substitua pela sua chave de API do Google
 
-app.use(cors()); // Usar cors
 app.use(bodyParser.json());
 
-app.post('/receber_localizacao', (req, res) => {
+app.post('/receber_localizacao', async (req, res) => {
     const { latitude, longitude } = req.body;
+    console.log(`Recebido: Latitude ${latitude}, Longitude ${longitude}`);
 
-    if (latitude && longitude) {
-        console.log(`Recebido: Latitude ${latitude}, Longitude ${longitude}`);
-        res.status(200).send('Localização recebida com sucesso!');
-    } else {
-        res.status(400).send('Dados de localização inválidos.');
+    try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleApiKey}`);
+        const address = response.data.results[0].formatted_address;
+        console.log(`Endereço aproximado: ${address}`);
+        res.send(`Localização recebida com sucesso! Endereço: ${address}`);
+    } catch (error) {
+        console.error('Erro ao obter o endereço:', error);
+        res.status(500).send('Erro ao obter o endereço');
     }
 });
 
 app.listen(port, () => {
     console.log(`Servidor ouvindo na porta ${port}`);
 });
-
-
