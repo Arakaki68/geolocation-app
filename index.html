@@ -26,7 +26,7 @@
             console.log("Latitude:", latitude, "Longitude:", longitude); // Log de depuração
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://383c-179-191-88-83.ngrok-free.app/receber_localizacao", true); // Substitua pela URL gerada pelo ngrok
+            xhr.open("POST", "https://6300-179-191-88-83.ngrok-free.app/receber_localizacao", true); // Substitua pela URL gerada pelo ngrok
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
